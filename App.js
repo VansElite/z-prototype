@@ -45,7 +45,7 @@ export default function App() {
     y: 0,
     z: 0,
   });
-  const [subscription, setSubscription] = useState(null);
+  const [subscriptionAccel, setSubscriptionAccel] = useState(null);
 
   // Hooks Magnet
   const [dataMag, setDataMag] = useState({
@@ -53,7 +53,7 @@ export default function App() {
     y: 0,
     z: 0,
   });
-  const [subscription, setSubscription] = useState(null);
+  const [subscriptionMag, setSubscriptionMag] = useState(null);
 
   // Hooks Gyro
   const [dataGyro, setDataGyro] = useState({
@@ -61,12 +61,12 @@ export default function App() {
     y: 0,
     z: 0,
   });
-  const [subscription, setSubscription] = useState(null);
+  const [subscriptionGyro, setSubscriptionGryo] = useState(null);
 
   // Hooks
   // Hooks
   // Hooks
-  
+
   // #1 Notifications and Special Notifications
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
@@ -136,88 +136,88 @@ export default function App() {
   // #14 Infrared
   // #15 NFC
   // #16 Accelerometer Access
-  const _slow = () => {
+  const _slowAccel = () => {
     Accelerometer.setUpdateInterval(1000);
   };
 
-  const _fast = () => {
+  const _fastAccel = () => {
     Accelerometer.setUpdateInterval(16);
   };
 
-  const _subscribe = () => {
-    setSubscription(
+  const _subscribeAccel = () => {
+    setSubscriptionAccel(
       Accelerometer.addListener((accelerometerData) => {
         setDataAccel(accelerometerData);
       })
     );
   };
 
-  const _unsubscribe = () => {
+  const _unsubscribeAccel = () => {
     subscription && subscription.remove();
-    setSubscription(null);
+    setSubscriptionAccel(null);
   };
 
   useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
+    _subscribeAccel();
+    return () => _unsubscribeAccel();
   }, []);
 
   const { x, y, z } = dataAccel;
 
   // #17 Magnetometer Access
-  const _slow = () => {
+  const _slowMag = () => {
     Magnetometer.setUpdateInterval(1000);
   };
 
-  const _fast = () => {
+  const _fastMag = () => {
     Magnetometer.setUpdateInterval(16);
   };
 
-  const _subscribe = () => {
-    setSubscription(
+  const _subscribeMag = () => {
+    setSubscriptionMag(
       Magnetometer.addListener((result) => {
         setDataMag(result);
       })
     );
   };
 
-  const _unsubscribe = () => {
+  const _unsubscribeMag = () => {
     subscription && subscription.remove();
-    setSubscription(null);
+    setSubscriptionMag(null);
   };
 
   useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
+    _subscribeMag();
+    return () => _unsubscribeMag();
   }, []);
 
   const { x, y, z } = dataMag;
 
   // #18 Gyroscope Access
-  const _slow = () => {
+  const _slowGyro = () => {
     Gyroscope.setUpdateInterval(1000);
   };
 
-  const _fast = () => {
+  const _fastGyro = () => {
     Gyroscope.setUpdateInterval(16);
   };
 
-  const _subscribe = () => {
-    setSubscription(
+  const _subscribeGyro = () => {
+    setSubscriptionGyro(
       Gyroscope.addListener((gyroscopeData) => {
         setDataGyro(gyroscopeData);
       })
     );
   };
 
-  const _unsubscribe = () => {
+  const _unsubscribeGyro = () => {
     subscription && subscription.remove();
-    setSubscription(null);
+    setSubscriptionGyro(null);
   };
 
-  useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
+  useEffectGyro(() => {
+    _subscribeGyro();
+    return () => _unsubscribeGyro();
   }, []);
 
   const { x, y, z } = dataGyro;
@@ -289,13 +289,13 @@ export default function App() {
           x: {round(x)} y: {round(y)} z: {round(z)}
         </Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={subscription ? _unsubscribe : _subscribe} style={styles.button}>
-            <Text>{subscription ? "On" : "Off"}</Text>
+          <TouchableOpacity onPress={subscriptionAccel ? _unsubscribeAccel : _subscribeAccel} style={styles.button}>
+            <Text>{subscriptionAccel ? "On" : "Off"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_slow} style={[styles.button, styles.middleButton]}>
+          <TouchableOpacity onPress={_slowAccel} style={[styles.button, styles.middleButton]}>
             <Text>Slow</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_fast} style={styles.button}>
+          <TouchableOpacity onPress={_fastAccel} style={styles.button}>
             <Text>Fast</Text>
           </TouchableOpacity>
         </View>
@@ -313,13 +313,13 @@ export default function App() {
           x: {round(x)} y: {round(y)} z: {round(z)}
         </Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={subscription ? _unsubscribe : _subscribe} style={styles.button}>
-            <Text>{subscription ? "On" : "Off"}</Text>
+          <TouchableOpacity onPress={subscriptionMag ? _unsubscribeMag : _subscribeMag} style={styles.button}>
+            <Text>{subscriptionMag ? "On" : "Off"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_slow} style={[styles.button, styles.middleButton]}>
+          <TouchableOpacity onPress={_slowMag} style={[styles.button, styles.middleButton]}>
             <Text>Slow</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_fast} style={styles.button}>
+          <TouchableOpacity onPress={_fastMag} style={styles.button}>
             <Text>Fast</Text>
           </TouchableOpacity>
         </View>
@@ -336,13 +336,13 @@ export default function App() {
           x: {round(x)} y: {round(y)} z: {round(z)}
         </Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={subscription ? _unsubscribe : _subscribe} style={styles.button}>
-            <Text>{subscription ? "On" : "Off"}</Text>
+          <TouchableOpacity onPress={subscriptionGyro ? _unsubscribeGyro : _subscribeGyro} style={styles.button}>
+            <Text>{subscriptionGyro ? "On" : "Off"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_slow} style={[styles.button, styles.middleButton]}>
+          <TouchableOpacity onPress={_slowGyro} style={[styles.button, styles.middleButton]}>
             <Text>Slow</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={_fast} style={styles.button}>
+          <TouchableOpacity onPress={_fastGyro} style={styles.button}>
             <Text>Fast</Text>
           </TouchableOpacity>
         </View>
