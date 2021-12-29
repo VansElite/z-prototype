@@ -29,7 +29,14 @@ export default function App() {
   // Hooks Notif
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
+  const [location, setLocation] = useState(null); // #4 Geo-Location
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [hasPermission, setHasPermission] = useState(null); // #5 Camera
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [recording, setRecording] = React.useState(); // #7 Microphone Access
+
+  // useRef
+  const notificationListener = useRef(); // #2 #3 Notifications and Special Notifications
   const responseListener = useRef();
 
   //  Hooks Geo
@@ -87,6 +94,7 @@ export default function App() {
 
   // #2 Geo-Location
   useEffect(() => {
+    // #4 Geo-Location
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -98,7 +106,33 @@ export default function App() {
       setLocation(location);
     })();
   }, []);
+  useEffect(() => {
+    // #5 Camera
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+  useEffect(() => {
+    // #8 Contact Book
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === "granted") {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Emails],
+        });
 
+        if (data.length > 0) {
+          const contact = data[0];
+          console.log(contact);
+        }
+      }
+    })();
+  }, []);
+
+  // #2 #3 Notifications and Special Notifications
+
+  // #4 Geo-Location
   let textGeoLocation = "Waiting..";
   if (errorMsg) {
     textGeoLocation = errorMsg;
@@ -123,7 +157,7 @@ export default function App() {
     return <Text>No access to camera</Text>;
   }
 
-  // #4 Speaker
+  // #6 Speaker
   const playSound = async () => {
     const sound = new Audio.Sound();
     try {
@@ -249,7 +283,7 @@ export default function App() {
         />
       </View>
 
-      {/* #2 Geo-Location */}
+      {/* #4 Geo-Location */}
       <Button title="Geo-Location" onPress={() => setVGeo(!vGeo)}></Button>
       <View
         style={{
@@ -259,7 +293,7 @@ export default function App() {
         <Text>{textGeoLocation}</Text>
       </View>
 
-      {/* #3 Camera */}
+      {/* #5 Camera */}
       <Button title="Camera" onPress={() => setVCamera(!vCamera)}></Button>
       <View style={{ display: vCamera ? null : "none" }}>
         <Camera type={type} style={{ height: 100 }}>
@@ -275,7 +309,7 @@ export default function App() {
         </Camera>
       </View>
 
-      {/* #4 Speaker */}
+      {/* #6 Speaker */}
       <Button title="Play Sound" onPress={playSound}></Button>
 
       {/* // #13 Bluetooth */}
@@ -355,7 +389,7 @@ export default function App() {
   );
 }
 
-// #1 Notifications and Special Notifications
+// #2 #3 Notifications and Special Notifications
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
